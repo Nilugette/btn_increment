@@ -1,3 +1,5 @@
 export const INCREMENT_A = 'INCREMENT_A';
 export const INCREMENT_B = 'INCREMENT_B';
+
 export const SUPER_INCREMENT = 'SUPER_INCREMENT';
+export const ASYNC_INCREMENT_C = 'ASYNC_INCREMENT_C';
