@@ -1,10 +1,66 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
+import { createStore, combineReducers,  applyMiddleware, compose } from 'redux';
+import { Provider } from 'react-redux';
+
+import counterA from './reducers/counterA';
+import counterB from './reducers/counterB';
+import superCounter from './reducers/superCounter';
+
 import './index.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 import App from './App';
+
 import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const rootReducer = combineReducers({
+    counterA,
+    counterB,
+    superCounter
+});
+
+const consoleMiddleware = store => {
+  return next => {
+    return action => {
+    console.log('dispatching, dispatch Name :', action.type)
+    const nextAction = next(action)
+    console.log('next state...', store.getState())
+    return nextAction
+    }
+   }
+}
+
+const superCounterMiddleware = store => {
+  return next => {
+    return action => {
+      if(action.type === "INCREMENT_A") {
+        console.log(store.dispatch({
+          type: "SUPER_INCREMENT"
+      }))
+      }
+    const nextAction = next(action)
+
+    return nextAction
+    }
+  }
+}
+
+const middlewares = [
+  superCounterMiddleware
+];
+  
+
+  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+  const store = createStore(rootReducer, composeEnhancers(applyMiddleware(...middlewares)))
+
+ReactDOM.render(
+    <Provider store={store} >
+        <App />
+    </Provider>
+    , document.getElementById('root')
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
